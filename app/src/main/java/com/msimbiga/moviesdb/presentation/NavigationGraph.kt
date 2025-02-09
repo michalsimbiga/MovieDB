@@ -29,6 +29,8 @@ import com.msimbiga.moviesdb.presentation.detail.DetailScreenDestination
 import com.msimbiga.moviesdb.presentation.detail.DetailScreenRoot
 import com.msimbiga.moviesdb.presentation.nowplaying.NowPlayingDestination
 import com.msimbiga.moviesdb.presentation.nowplaying.NowPlayingScreenRoot
+import com.msimbiga.moviesdb.presentation.search.SearchScreenDestination
+import com.msimbiga.moviesdb.presentation.search.SearchScreenRoot
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
@@ -48,9 +50,9 @@ sealed class BottomScreen<T>(
     )
 
     @Serializable
-    data object Search : BottomScreen<NowPlayingDestination>(
+    data object Search : BottomScreen<SearchScreenDestination>(
         "Search",
-        NowPlayingDestination,
+        SearchScreenDestination,
         selectedIcon = Icons.Default.Search,
         unselectedIcon = Icons.Outlined.Search
     )
@@ -118,6 +120,7 @@ fun NavigationGraph() {
             }
         }
     ) { paddingValues ->
+
         NavHost(
             modifier = Modifier.padding(paddingValues = paddingValues),
             navController = navController,
@@ -135,6 +138,14 @@ fun NavigationGraph() {
                 DetailScreenRoot(
                     onNavigateBack = {
                         navController.popBackStack()
+                    }
+                )
+            }
+
+            composable<SearchScreenDestination> {
+                SearchScreenRoot(
+                    onNavigateToDetails = { id ->
+                        navController.navigate(DetailScreenDestination(id))
                     }
                 )
             }
