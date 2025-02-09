@@ -2,8 +2,6 @@ package com.msimbiga.moviesdb.presentation.models
 
 import com.msimbiga.moviesdb.core.domain.models.MovieDetails
 import com.msimbiga.moviesdb.core.domain.models.MovieDetailsGenres
-import com.msimbiga.moviesdb.core.domain.models.MovieDetailsProductionCompany
-import com.msimbiga.moviesdb.core.domain.models.MovieDetailsProductionCountry
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -12,7 +10,7 @@ data class MovieDetailsItem(
     val id: Int,
     val imdbId: String,
     val adult: Boolean,
-    val backdropPath: String,
+    val backdropPath: String?,
     val belongsToCollection: String,
     val budget: Int,
     val genres: List<MovieDetailsGenres>,
@@ -21,9 +19,7 @@ data class MovieDetailsItem(
     val originalTitle: String,
     val overview: String,
     val popularity: Double,
-    val posterPath: String,
-    val productionCompanies: List<MovieDetailsProductionCompany>,
-    val productionCountries: List<MovieDetailsProductionCountry>,
+    val posterPath: String?,
     val releaseDate: String, // only the year of release
     val title: String,
     val revenue: Int,
@@ -33,15 +29,15 @@ data class MovieDetailsItem(
     val video: Boolean,
     val voteAverage: Double,
     val voteCount: Int,
-    val posterUrl: String,
-    val imageUrl: String,
+    val posterUrl: String?,
+    val imageUrl: String?,
 )
 
 fun MovieDetails.toUi() = MovieDetailsItem(
     id = id,
     adult = adult,
-    posterUrl = "https://image.tmdb.org/t/p/original$posterPath",
-    imageUrl = "https://image.tmdb.org/t/p/original$backdropPath",
+    posterUrl = if (posterPath != null) "https://image.tmdb.org/t/p/original$posterPath" else null,
+    imageUrl = if (backdropPath != null) "https://image.tmdb.org/t/p/original$backdropPath" else null,
     originalLanguage = originalLanguage,
     originalTitle = originalTitle,
     overview = overview,
@@ -60,8 +56,6 @@ fun MovieDetails.toUi() = MovieDetailsItem(
     budget = budget,
     genres = genres,
     homepage = homepage,
-    productionCompanies = productionCompanies,
-    productionCountries = productionCountries,
     revenue = revenue,
     runtime = runtime,
     status = status,
