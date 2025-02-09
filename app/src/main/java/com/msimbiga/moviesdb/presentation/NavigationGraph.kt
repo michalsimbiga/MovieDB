@@ -2,6 +2,10 @@ package com.msimbiga.moviesdb.presentation
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -18,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -80,42 +85,37 @@ fun NavigationGraph() {
     }
 
     val navController = rememberNavController()
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentDestination = currentBackStackEntry?.destination
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
 
     Scaffold(
         bottomBar = {
             AnimatedVisibility(
-                true
-//                bottomDestinations.map { it.toString() }
-//                    .contains(currentDestination.toString())
-//                currentDestination.value?.destination?.route in topLevelDestinations.map { it.route }
+                currentDestination?.hierarchy
+                    ?.any { it.route in bottomDestinations.map { dest -> dest.route::class.qualifiedName } } == true,
+                enter =  expandVertically(expandFrom = Alignment.Bottom),
+                exit =  shrinkVertically(shrinkTowards = Alignment.Bottom)
             ) {
                 NavigationBar {
-                    bottomDestinations.forEachIndexed { index, item ->
-                        val isSelected = currentDestination
-                            ?.hierarchy
-                            ?.any {
-                                it.hasRoute(
-                                    route = item.toString(),
-                                    arguments = null
-                                )
-                            } == true
+                    bottomDestinations.forEach { screen ->
+                        val isSelected =
+                            currentDestination?.hierarchy?.any { it.route == screen.route::class.qualifiedName } == true
+
                         NavigationBarItem(
                             selected = isSelected,
                             onClick = {
-                                navController.navigate(item.route) {
+                                navController.navigate(screen.route) {
                                     launchSingleTop = true
                                 }
                             },
                             icon = {
                                 Icon(
-                                    imageVector = item.selectedIcon,
-                                    contentDescription = item.route.toString()
+                                    imageVector = screen.selectedIcon,
+                                    contentDescription = screen.route.toString()
                                 )
                             },
-                            label = { Text(item.title) }
+                            label = { Text(screen.title) }
                         )
                     }
                 }
