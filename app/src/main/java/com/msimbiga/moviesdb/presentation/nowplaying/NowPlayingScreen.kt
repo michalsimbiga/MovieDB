@@ -1,14 +1,11 @@
 package com.msimbiga.moviesdb.presentation.nowplaying
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.msimbiga.moviesdb.core.presentation.ObserveAsEvents
 import com.msimbiga.moviesdb.presentation.components.DefaultErrorView
+import com.msimbiga.moviesdb.presentation.components.DefaultLoadingView
 import com.msimbiga.moviesdb.presentation.components.TopAppBar
 import com.msimbiga.moviesdb.presentation.nowplaying.components.MovieTile
 import kotlinx.serialization.Serializable
@@ -59,15 +57,11 @@ fun NowPlayingScreenContent(
 
         when (state) {
             is NowPlayingState.Error -> {
-                DefaultErrorView(
-                    onRetryClick = { onAction(NowPlayingAction.OnErrorRetryClicked) }
-                )
+                DefaultErrorView(onRetryClick = { onAction(NowPlayingAction.OnErrorRetryClicked) })
             }
 
             NowPlayingState.Loading -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    CircularProgressIndicator()
-                }
+                DefaultLoadingView()
             }
 
             is NowPlayingState.Success -> {
