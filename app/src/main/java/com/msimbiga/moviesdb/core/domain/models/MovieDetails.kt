@@ -22,3 +22,14 @@ data class MovieDetails(
     val tagline: String,
     val voteAverage: Double,
 )
+
+fun MovieDetails.toMovie() =
+    Movie(
+        id = id,
+        backdropPath = backdropPath,
+        overview = overview,
+        posterPath = posterPath,
+        releaseDate = releaseDate,
+        title = title,
+        voteAverage = voteAverage,
+    )
