@@ -97,7 +97,8 @@ fun DetailScreenContent(
                                 .build(),
                             contentScale = ContentScale.Crop,
                             contentDescription = "${state.movie.title} image",
-                            placeholder = painterResource(R.drawable.ic_launcher_foreground)
+                            placeholder = painterResource(R.drawable.ic_launcher_foreground),
+                            error = painterResource(R.drawable.ic_launcher_foreground),
                         )
                     }
 

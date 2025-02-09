@@ -58,6 +58,7 @@ fun MovieTile(
             placeholder = painterResource(R.drawable.ic_launcher_foreground),
             contentDescription = "${movie.title} image",
             onError = { Log.d("VUKO", "On error $it") },
+            error = painterResource(R.drawable.ic_launcher_foreground),
         )
 
         // Name + rating
