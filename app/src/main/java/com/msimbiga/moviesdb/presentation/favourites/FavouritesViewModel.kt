@@ -17,7 +17,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -32,7 +31,7 @@ class FavouritesViewModel @Inject constructor(
     private val _event = Channel<FavouritesEvent>()
     val event = _event.receiveAsFlow()
 
-    private val _state = MutableStateFlow(FavouritesState())
+    private val _state = MutableStateFlow(FavouritesState(isLoading = true))
     val state = _state
         .onStart { loadLikedMovies() }
 //        .map {
@@ -61,8 +60,6 @@ class FavouritesViewModel @Inject constructor(
 
     private fun loadLikedMovies() {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update { it.copy(isLoading = true) }
-
             val movies = moviesRepository.getLikedMoviesFlow().first().map { id ->
                 async { moviesRepository.getMovieDetails(id) }
             }.awaitAll()

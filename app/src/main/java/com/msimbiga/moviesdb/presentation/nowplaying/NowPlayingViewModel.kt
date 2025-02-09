@@ -26,7 +26,7 @@ class NowPlayingViewModel @Inject constructor(
     private val _event: Channel<NowPlayingEvent> = Channel()
     val event = _event.receiveAsFlow()
 
-    private val _state = MutableStateFlow<NowPlayingState>(NowPlayingState.Loading)
+    private val _state = MutableStateFlow(NowPlayingState(isLoading = true))
     val state = _state
         .onStart { fetchNowPlayingMovies() }
         .stateIn(
@@ -50,18 +50,15 @@ class NowPlayingViewModel @Inject constructor(
             when (val movies = moviesRepository.fetchNowPlayingPage(page)) {
                 is Result.Error -> {
                     _state.update {
-                        val storedMovies = when (val currentState = _state.value) {
-                            is NowPlayingState.Success -> currentState.movies
-                            is NowPlayingState.Error -> currentState.movies
-                            else -> emptyList()
-                        }
-                        NowPlayingState.Error(movies = storedMovies)
+                        it.copy(isError = true, isLoading = false)
                     }
                 }
 
                 is Result.Success -> {
                     _state.update {
-                        NowPlayingState.Success(
+                        it.copy(
+                            isLoading = false,
+                            isError = false,
                             movies = movies.data.results.map(Movie::toUi)
                         )
                     }

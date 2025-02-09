@@ -1,6 +1,5 @@
 package com.msimbiga.moviesdb.presentation.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.msimbiga.moviesdb.core.domain.Result
@@ -31,11 +30,7 @@ class SearchViewModel @Inject constructor(
     val event = _event.receiveAsFlow()
 
     private val _state = MutableStateFlow<SearchState>(
-        SearchState(
-            isLoading = false,
-            searchTerm = "",
-            suggestions = emptyList()
-        )
+        SearchState(isLoading = true)
     )
     val state = _state
         .onStart {
@@ -106,5 +101,4 @@ class SearchViewModel @Inject constructor(
             moviesRepository.setMovieLiked(id, isMovieLiked.not())
         }
     }
-
 }
