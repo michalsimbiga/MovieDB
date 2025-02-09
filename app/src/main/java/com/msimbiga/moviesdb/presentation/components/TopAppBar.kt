@@ -1,5 +1,6 @@
 package com.msimbiga.moviesdb.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +29,7 @@ fun TopAppBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp) // Taken from TopAppBarSmallTokens size
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp),
     ) {
         if (onNavigateBack != null) {
@@ -44,7 +47,7 @@ fun TopAppBar(
             modifier = Modifier.align(Alignment.Center),
             text = title,
             fontSize = 22.sp,
-            fontWeight = W500
+            fontWeight = W500,
         )
     }
 }
