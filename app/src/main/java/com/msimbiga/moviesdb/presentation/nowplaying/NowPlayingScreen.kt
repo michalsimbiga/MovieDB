@@ -14,10 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.msimbiga.moviesdb.core.domain.models.Movie
 import com.msimbiga.moviesdb.core.presentation.ObserveAsEvents
 import com.msimbiga.moviesdb.presentation.components.DefaultErrorView
 import com.msimbiga.moviesdb.presentation.components.DefaultLoadingView
 import com.msimbiga.moviesdb.presentation.components.TopAppBar
+import com.msimbiga.moviesdb.presentation.models.toUi
 import com.msimbiga.moviesdb.presentation.nowplaying.components.MovieTile
 import kotlinx.serialization.Serializable
 
@@ -46,25 +48,23 @@ fun NowPlayingScreenRoot(
 @Composable
 @Preview
 fun NowPlayingScreenContent(
-    state: NowPlayingState = NowPlayingState.Loading,
+    state: NowPlayingState = NowPlayingState(movies = listOf(Movie.mock.toUi())),
     onAction: (NowPlayingAction) -> Unit = {}
 ) {
-    // TODO: Add Error and loading views
-
     Scaffold(
         topBar = { TopAppBar(title = "Now playing") }
     ) { paddingValues ->
 
-        when (state) {
-            is NowPlayingState.Error -> {
+        when {
+            state.isError -> {
                 DefaultErrorView(onRetryClick = { onAction(NowPlayingAction.OnErrorRetryClicked) })
             }
 
-            NowPlayingState.Loading -> {
+            state.isLoading -> {
                 DefaultLoadingView()
             }
 
-            is NowPlayingState.Success -> {
+            else -> {
                 val scrollState = rememberLazyGridState()
 
                 LazyVerticalGrid(

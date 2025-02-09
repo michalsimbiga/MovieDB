@@ -1,9 +1,12 @@
 package com.msimbiga.moviesdb.presentation.nowplaying
 
+import androidx.compose.runtime.Immutable
 import com.msimbiga.moviesdb.presentation.models.MovieItem
 
-sealed interface NowPlayingState {
-    data object Loading : NowPlayingState
-    data class Error(val movies: List<MovieItem>) : NowPlayingState
-    data class Success(val movies: List<MovieItem>) : NowPlayingState
-}
+@Immutable
+data class NowPlayingState(
+    val isLoading: Boolean = false,
+    val isError: Boolean = false,
+    val movies: List<MovieItem>
+)
+
