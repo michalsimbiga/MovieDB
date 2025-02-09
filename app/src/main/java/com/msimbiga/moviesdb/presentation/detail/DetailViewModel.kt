@@ -1,6 +1,5 @@
 package com.msimbiga.moviesdb.presentation.detail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,18 +18,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val moviesRepository: MoviesRepository,
 ) : ViewModel() {
 
     private val selectedId = savedStateHandle.get<Int?>("id")
 
-    private val _state = MutableStateFlow(DetailState())
+    private val _state = MutableStateFlow<DetailState>(DetailState.Loading)
     val state = _state
-        .onStart {
-            fetchMovieDetails()
-            Log.d("VUKO", "Selected id is $selectedId")
-        }
+        .onStart { fetchMovieDetails() }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -40,15 +36,19 @@ class DetailViewModel @Inject constructor(
     fun onAction(action: DetailsAction) {
         when (action) {
             DetailsAction.OnFavouritesClick -> TODO()
+            DetailsAction.OnErrorRetryClicked -> fetchMovieDetails()
         }
     }
 
     private fun fetchMovieDetails() {
         viewModelScope.launch(Dispatchers.IO) {
             when (val details = moviesRepository.getMovieDetails(checkNotNull(selectedId))) {
-                is Result.Error -> {}
+                is Result.Error -> {
+                    _state.update { DetailState.Error }
+                }
+
                 is Result.Success -> {
-                    _state.update { it.copy(movie = details.data.toUi()) }
+                    _state.update { DetailState.Success(movie = details.data.toUi()) }
                 }
             }
         }
