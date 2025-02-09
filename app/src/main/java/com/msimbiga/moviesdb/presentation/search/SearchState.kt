@@ -5,8 +5,8 @@ import com.msimbiga.moviesdb.presentation.models.MovieItem
 
 @Immutable
 data class SearchState(
-    val isLoading: Boolean,
-    val suggestions: List<MovieItem>,
+    val isLoading: Boolean = false,
+    val suggestions: List<MovieItem> = emptyList(),
     val searchTerm: String = "",
     val likedMovies: List<Int> = emptyList()
 )
