@@ -3,8 +3,6 @@ package com.msimbiga.moviesdb.presentation
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -94,8 +92,8 @@ fun NavigationGraph() {
             AnimatedVisibility(
                 currentDestination?.hierarchy
                     ?.any { it.route in bottomDestinations.map { dest -> dest.route::class.qualifiedName } } == true,
-                enter =  expandVertically(expandFrom = Alignment.Bottom),
-                exit =  shrinkVertically(shrinkTowards = Alignment.Bottom)
+                enter = expandVertically(expandFrom = Alignment.Bottom),
+                exit = shrinkVertically(shrinkTowards = Alignment.Bottom)
             ) {
                 NavigationBar {
                     bottomDestinations.forEach { screen ->
@@ -107,6 +105,7 @@ fun NavigationGraph() {
                             onClick = {
                                 navController.navigate(screen.route) {
                                     launchSingleTop = true
+                                    popUpTo(NowPlayingDestination)
                                 }
                             },
                             icon = {
