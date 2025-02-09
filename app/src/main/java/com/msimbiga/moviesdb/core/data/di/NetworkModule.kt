@@ -1,5 +1,7 @@
 package com.msimbiga.moviesdb.core.data.di
 
+import com.msimbiga.moviesdb.BuildConfig
+import com.msimbiga.moviesdb.core.data.datasource.MoviesNetworkDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,4 +42,15 @@ class NetworkModule {
                 accept(ContentType.Application.Json)
             }
         }
+
+    @Provides
+    @Singleton
+    fun provideMoviesNetworkDataSource(
+        httpClient: HttpClient
+    ): MoviesNetworkDataSource =
+        MoviesNetworkDataSource(
+            httpClient = httpClient,
+            apiKey = BuildConfig.API_ACCESS_TOKEN,
+        )
+
 }
