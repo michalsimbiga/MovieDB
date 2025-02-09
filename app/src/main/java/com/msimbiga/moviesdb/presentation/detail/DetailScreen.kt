@@ -126,7 +126,7 @@ fun DetailScreenContent(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             InfoChip(state.movie.releaseDate)
-                            InfoChip("${state.movie.releaseDate} min")
+                            InfoChip("${state.movie.runtime} min")
                         }
 
                     }
