@@ -1,4 +1,4 @@
-package com.msimbiga.moviesdb.ui.theme
+package com.msimbiga.moviesdb.core.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
