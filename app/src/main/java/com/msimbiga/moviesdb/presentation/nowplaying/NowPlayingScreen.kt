@@ -10,10 +10,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.msimbiga.moviesdb.R
 import com.msimbiga.moviesdb.core.domain.models.Movie
 import com.msimbiga.moviesdb.core.presentation.ObserveAsEvents
 import com.msimbiga.moviesdb.presentation.components.DefaultErrorView
@@ -52,7 +54,7 @@ fun NowPlayingScreenContent(
     onAction: (NowPlayingAction) -> Unit = {}
 ) {
     Scaffold(
-        topBar = { TopAppBar(title = "Now playing") }
+        topBar = { TopAppBar(title = stringResource(R.string.now_playing_title)) }
     ) { paddingValues ->
 
         when {

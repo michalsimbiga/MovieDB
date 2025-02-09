@@ -1,6 +1,5 @@
 package com.msimbiga.moviesdb.presentation.search.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,7 +49,7 @@ fun MovieSuggestionTile(
             .clickable { onClick() },
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Image
+
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth(0.40f)
@@ -64,7 +63,6 @@ fun MovieSuggestionTile(
             placeholder = painterResource(R.drawable.ic_launcher_foreground),
             contentDescription = "${movie.title} image",
             error = painterResource(R.drawable.ic_launcher_foreground),
-            onError = { Log.d("VUKO", "On error $it") },
         )
 
         Column(
@@ -74,7 +72,7 @@ fun MovieSuggestionTile(
                 .padding(vertical = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
-            //Title and tags
+
             Column {
                 Text(
                     text = movie.title,
@@ -89,7 +87,6 @@ fun MovieSuggestionTile(
                 )
             }
 
-            // Rating
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

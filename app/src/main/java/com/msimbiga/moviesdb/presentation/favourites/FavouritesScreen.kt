@@ -13,9 +13,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.msimbiga.moviesdb.R
 import com.msimbiga.moviesdb.core.presentation.ObserveAsEvents
 import com.msimbiga.moviesdb.presentation.components.DefaultErrorView
 import com.msimbiga.moviesdb.presentation.components.DefaultLoadingView
@@ -31,7 +33,6 @@ data object FavouritesDestination
 fun FavouritesScreenRoot(
     viewModel: FavouritesViewModel = hiltViewModel(),
     onNavigateToDetails: (Int) -> Unit = {},
-    onNavigateBackClicked: () -> Unit = {}
 ) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -46,7 +47,6 @@ fun FavouritesScreenRoot(
 
     FavouritesScreenContent(
         state = state,
-        onNavigateBackClicked = onNavigateBackClicked,
         onAction = viewModel::onAction
     )
 }
@@ -59,11 +59,14 @@ private fun FavouritesScreenContent(
         favouriteMoviesIdList = emptyList()
     ),
     onAction: (FavouritesAction) -> Unit = {},
-    onNavigateBackClicked: () -> Unit
 ) {
 
     Scaffold(
-        topBar = { TopAppBar(title = "Favourites", onNavigateBack = onNavigateBackClicked) }
+        topBar = {
+            TopAppBar(
+                title = stringResource(R.string.favourites_title),
+            )
+        }
     ) { paddingValues ->
 
         when {
@@ -96,7 +99,7 @@ private fun FavouritesScreenContent(
 
             state.favouriteMovies.isEmpty() -> {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    Text("No favourite movies yet")
+                    Text(stringResource(R.string.favourites_no_items_text))
                 }
             }
         }

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">MoviesDB</string>
+    <string name="failed_to_load_data_text">Failed to load data</string>
+    <string name="failed_to_load_data_retry_text">Retry</string>
+    <string name="now_playing_title">Now playing</string>
+    <string name="favourites_title">Favourites</string>
+    <string name="favourites_no_items_text">No favourite movies yet</string>
+    <string name="movie_details_title">Movie details</string>
+    <string name="movie_details_runtime">%s min</string>
+    <string name="movie_details_overall_rating_text">Overall Rating</string>
 </resources>

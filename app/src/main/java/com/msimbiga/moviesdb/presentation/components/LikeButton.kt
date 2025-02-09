@@ -7,7 +7,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,7 +42,7 @@ fun LikeButton(
     IconButton(
         onClick = onLikeClicked,
         colors = IconButtonDefaults.iconButtonColors().copy(
-            containerColor = MaterialTheme.colorScheme.onBackground,
+            containerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f),
         ),
         modifier = modifier
             .size(40.dp)
@@ -57,7 +56,8 @@ fun LikeButton(
             Image(
                 imageVector = Icons.Default.FavoriteBorder,
                 contentDescription = null,
-                modifier = Modifier
+                modifier = Modifier,
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f))
             )
         }
 

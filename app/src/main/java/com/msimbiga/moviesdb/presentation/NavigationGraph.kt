@@ -156,9 +156,6 @@ fun NavigationGraph() {
                     onNavigateToDetails = { id ->
                         navController.navigate(DetailScreenDestination(id))
                     },
-                    onNavigateBackClicked = {
-                        navController.popBackStack()
-                    }
                 )
             }
         }

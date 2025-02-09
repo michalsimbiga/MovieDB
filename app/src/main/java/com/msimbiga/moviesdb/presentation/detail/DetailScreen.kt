@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -65,7 +66,10 @@ fun DetailScreenContent(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = "Movie Details", onNavigateBack = onNavigateBack)
+            TopAppBar(
+                title = stringResource(R.string.movie_details_title),
+                onNavigateBack = onNavigateBack
+            )
         })
     { paddingValues ->
 
@@ -103,7 +107,10 @@ fun DetailScreenContent(
                     }
 
                     item {
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
 
                             Text(
                                 modifier = Modifier.weight(1f, fill = true),
@@ -125,8 +132,12 @@ fun DetailScreenContent(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            InfoChip(state.movie.releaseDate)
-                            InfoChip("${state.movie.runtime} min")
+                            state.movie.releaseDate.let {
+                                InfoChip(it)
+                            }
+                            state.movie.runtime.let {
+                                InfoChip(stringResource(R.string.movie_details_runtime, it))
+                            }
                         }
 
                     }
@@ -171,7 +182,7 @@ private fun OverallRating(modifier: Modifier, voteAverage: Double) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Overall Rating")
+        Text(text = stringResource(R.string.movie_details_overall_rating_text))
         Text(
             text = "$voteAverage",
             fontWeight = FontWeight.Bold,
