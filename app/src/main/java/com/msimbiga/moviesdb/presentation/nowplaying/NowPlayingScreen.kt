@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.msimbiga.moviesdb.core.presentation.ObserveAsEvents
 import com.msimbiga.moviesdb.presentation.nowplaying.components.MovieTile
 import kotlinx.serialization.Serializable
 
@@ -23,8 +24,15 @@ fun NowPlayingScreenRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
+    ObserveAsEvents(viewModel.event) { event ->
+        when (event) {
+            is NowPlayingEvent.NavigateToDetails -> onNavigateToDetail(event.id)
+        }
+    }
+
     NowPlayingScreenContent(
-        state = state
+        state = state,
+        onAction = viewModel::onAction
     )
 }
 
@@ -34,6 +42,8 @@ fun NowPlayingScreenContent(
     state: NowPlayingState = NowPlayingState(movies = emptyList(), isLoading = true),
     onAction: (NowPlayingAction) -> Unit = {}
 ) {
+    // TODO: Add Error and loading views
+
     if (state.movies.isNotEmpty()) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 180.dp),
@@ -41,25 +51,12 @@ fun NowPlayingScreenContent(
         ) {
             items(state.movies) { movie ->
                 MovieTile(
-                    movie = movie
+                    movie = movie,
+                    onClick = { onAction(NowPlayingAction.OnMovieSelected(movie.id)) }
                 )
             }
         }
 
     }
-
-//    LazyColumn(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .imePadding()
-//    ) {
-//        if (state.movies.isNotEmpty()) {
-//            items(state.movies) { movie ->
-//                MovieTile(
-//                    movie = movie
-//                )
-//            }
-//        }
-//    }
 
 }

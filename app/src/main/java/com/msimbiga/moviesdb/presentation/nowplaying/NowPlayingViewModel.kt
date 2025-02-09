@@ -37,6 +37,13 @@ class NowPlayingViewModel @Inject constructor(
             initialValue = _state.value
         )
 
+    fun onAction(action: NowPlayingAction) {
+        when (action) {
+            is NowPlayingAction.OnMovieSelected -> {
+                _event.trySend(NowPlayingEvent.NavigateToDetails(action.id))
+            }
+        }
+    }
 
     private fun fetchNowPlayingMovies() {
         viewModelScope.launch(Dispatchers.IO) {
