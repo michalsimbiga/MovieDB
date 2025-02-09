@@ -2,7 +2,8 @@ package com.msimbiga.moviesdb.presentation.nowplaying
 
 import com.msimbiga.moviesdb.presentation.models.MovieItem
 
-data class NowPlayingState(
-    val movies: List<MovieItem>,
-    val isLoading: Boolean
-)
+sealed interface NowPlayingState {
+    data object Loading : NowPlayingState
+    data class Error(val movies: List<MovieItem>) : NowPlayingState
+    data class Success(val movies: List<MovieItem>) : NowPlayingState
+}
