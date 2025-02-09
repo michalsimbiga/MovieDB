@@ -39,7 +39,10 @@ fun MovieTile(
     onClick: () -> Unit = {}
 ) {
     Column(
-        modifier = Modifier.clickable { onClick() }
+        modifier = Modifier
+            .padding(bottom = 12.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .clickable { onClick() }
     ) {
         // Image
         AsyncImage(
