@@ -36,7 +36,7 @@ class DetailViewModel @Inject constructor(
     fun onAction(action: DetailsAction) {
         when (action) {
             DetailsAction.OnFavouritesClick -> TODO()
-            DetailsAction.OnErrorRetryClicked -> fetchMovieDetails()
+            DetailsAction.OnErrorRetryClick -> fetchMovieDetails()
         }
     }
 

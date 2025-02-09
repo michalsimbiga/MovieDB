@@ -71,7 +71,7 @@ fun DetailScreenContent(
 
         when (state) {
             DetailState.Error ->
-                DefaultErrorView(onRetryClick = { onAction(DetailsAction.OnErrorRetryClicked) })
+                DefaultErrorView(onRetryClick = { onAction(DetailsAction.OnErrorRetryClick) })
 
             DetailState.Loading -> {
                 DefaultLoadingView()
