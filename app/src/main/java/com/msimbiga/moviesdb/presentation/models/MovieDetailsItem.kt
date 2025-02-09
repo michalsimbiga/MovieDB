@@ -24,7 +24,7 @@ data class MovieDetailsItem(
     val posterPath: String,
     val productionCompanies: List<MovieDetailsProductionCompany>,
     val productionCountries: List<MovieDetailsProductionCountry>,
-    val releaseDate: String,
+    val releaseDate: String, // only the year of release
     val title: String,
     val revenue: Int,
     val runtime: Int,
@@ -47,10 +47,12 @@ fun MovieDetails.toUi() = MovieDetailsItem(
     overview = overview,
     popularity = popularity,
     posterPath = posterPath,
-    releaseDate = releaseDate,
+    releaseDate = releaseDate.split("-").firstOrNull()
+        .orEmpty(), // Would be better to parse date as DateTime and get the year from it
     title = title,
     video = video,
-    voteAverage = BigDecimal(voteAverage).setScale(1, RoundingMode.HALF_EVEN).toDouble(),
+    voteAverage = BigDecimal(voteAverage).setScale(1, RoundingMode.HALF_EVEN)
+        .toDouble(), // To round votes to singular decimal place
     voteCount = voteCount,
     imdbId = imdbId,
     backdropPath = backdropPath,
