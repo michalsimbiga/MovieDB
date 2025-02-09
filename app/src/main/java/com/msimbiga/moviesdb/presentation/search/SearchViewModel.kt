@@ -38,7 +38,10 @@ class SearchViewModel @Inject constructor(
         )
     )
     val state = _state
-        .onStart { observeTextChanges() }
+        .onStart {
+            observeTextChanges()
+            observeLikedMovies()
+        }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
@@ -54,6 +57,10 @@ class SearchViewModel @Inject constructor(
             is SearchAction.OnMovieClicked -> {
                 _event.trySend(SearchEvent.OnMovieSelected(action.id))
             }
+
+            is SearchAction.OnMovieLikedClicked -> {
+                setMovieLiked(action.id)
+            }
         }
     }
 
@@ -66,7 +73,6 @@ class SearchViewModel @Inject constructor(
                 .collect { searchTerm ->
                     if (searchTerm.isEmpty()) return@collect
                     _state.update { it.copy(isLoading = true) }
-                    Log.d("VUKO", "should search for term $searchTerm")
 
                     when (val results = moviesRepository.fetchSearchPage(searchTerm, null)) {
                         is Result.Error -> {
@@ -83,6 +89,21 @@ class SearchViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    private fun observeLikedMovies() {
+        viewModelScope.launch {
+            moviesRepository.getLikedMoviesFlow().collect { likedMovies ->
+                _state.update { it.copy(likedMovies = likedMovies) }
+            }
+        }
+    }
+
+    private fun setMovieLiked(id: Int) {
+        viewModelScope.launch {
+            val isMovieLiked = id in _state.value.likedMovies
+            moviesRepository.setMovieLiked(id, isMovieLiked.not())
         }
     }
 

@@ -113,7 +113,9 @@ private fun SearchScreenContent(
                             .fillMaxWidth()
                             .aspectRatio(1.9f),
                         movie = movie,
-                        onClick = { onAction(SearchAction.OnMovieClicked(movie.id)) }
+                        onClick = { onAction(SearchAction.OnMovieClicked(movie.id)) },
+                        isLiked = movie.id in state.likedMovies,
+                        onLikeClick = { onAction(SearchAction.OnMovieLikedClicked(movie.id)) }
                     )
                 }
             }

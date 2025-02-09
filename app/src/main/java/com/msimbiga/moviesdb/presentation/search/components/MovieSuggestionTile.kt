@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,6 +30,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.msimbiga.moviesdb.R
 import com.msimbiga.moviesdb.core.domain.models.Movie
+import com.msimbiga.moviesdb.presentation.components.LikeButton
 import com.msimbiga.moviesdb.presentation.models.MovieItem
 import com.msimbiga.moviesdb.presentation.models.toUi
 
@@ -36,8 +38,10 @@ import com.msimbiga.moviesdb.presentation.models.toUi
 @PreviewLightDark
 fun MovieSuggestionTile(
     modifier: Modifier = Modifier,
+    isLiked: Boolean = false,
     movie: MovieItem = Movie.mock.toUi(),
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLikeClick: () -> Unit = {}
 ) {
 
     Row(
@@ -86,18 +90,31 @@ fun MovieSuggestionTile(
             }
 
             // Rating
-            Text(
+            Row(
                 modifier = Modifier
-                    .background(
-                        color = Color.Gray.copy(0.3f),
-                        shape = RoundedCornerShape(percent = 50)
-                    )
-                    .padding(horizontal = 4.dp),
-                text = movie.voteAverage.toString(),
-                fontWeight = FontWeight.Bold,
-                fontSize = 12.sp,
-                maxLines = 1
-            )
+                    .fillMaxWidth()
+                    .padding(end = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    modifier = Modifier
+                        .background(
+                            color = Color.Gray.copy(0.3f),
+                            shape = RoundedCornerShape(percent = 50)
+                        )
+                        .padding(horizontal = 4.dp),
+                    text = movie.voteAverage.toString(),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    maxLines = 1
+                )
+
+                LikeButton(
+                    liked = isLiked,
+                    onLikeClicked = onLikeClick
+                )
+            }
         }
     }
 }
