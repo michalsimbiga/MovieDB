@@ -1,9 +1,12 @@
 package com.msimbiga.moviesdb.presentation.detail
 
+import androidx.compose.runtime.Immutable
 import com.msimbiga.moviesdb.presentation.models.MovieDetailsItem
 
-sealed interface DetailState {
-    data object Loading : DetailState
-    data object Error : DetailState
-    data class Success(val movie: MovieDetailsItem) : DetailState
-}
+@Immutable
+data class DetailState(
+    val movie: MovieDetailsItem? = null,
+    val likedMovies: List<Int> = emptyList(),
+    val isLoading: Boolean = false,
+    val isError: Boolean = false
+)

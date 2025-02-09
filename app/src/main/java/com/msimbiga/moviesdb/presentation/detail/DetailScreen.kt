@@ -36,6 +36,7 @@ import coil3.request.crossfade
 import com.msimbiga.moviesdb.R
 import com.msimbiga.moviesdb.presentation.components.DefaultErrorView
 import com.msimbiga.moviesdb.presentation.components.DefaultLoadingView
+import com.msimbiga.moviesdb.presentation.components.LikeButton
 import com.msimbiga.moviesdb.presentation.components.TopAppBar
 import com.msimbiga.moviesdb.presentation.models.MovieDetailsItem
 import kotlinx.serialization.Serializable
@@ -59,7 +60,7 @@ fun DetailScreenRoot(
 
 @Composable
 fun DetailScreenContent(
-    state: DetailState = DetailState.Loading,
+    state: DetailState = DetailState(),
     onNavigateBack: () -> Unit = {},
     onAction: (DetailsAction) -> Unit = {}
 ) {
@@ -69,15 +70,15 @@ fun DetailScreenContent(
         })
     { paddingValues ->
 
-        when (state) {
-            DetailState.Error ->
+        when {
+            state.isError ->
                 DefaultErrorView(onRetryClick = { onAction(DetailsAction.OnErrorRetryClick) })
 
-            DetailState.Loading -> {
+            state.isLoading -> {
                 DefaultLoadingView()
             }
 
-            is DetailState.Success ->
+            state.movie != null ->
                 LazyColumn(
                     modifier = Modifier.padding(paddingValues),
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 36.dp),
@@ -103,12 +104,21 @@ fun DetailScreenContent(
                     }
 
                     item {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = state.movie.title,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(modifier = Modifier.fillMaxWidth()) {
+
+                            Text(
+                                modifier = Modifier.weight(1f, fill = true),
+                                text = state.movie.title,
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            LikeButton(
+                                modifier = Modifier,
+                                liked = state.movie.id in state.likedMovies,
+                                onLikeClicked = { onAction(DetailsAction.OnMovieLikeClick) }
+                            )
+                        }
                     }
 
                     item {

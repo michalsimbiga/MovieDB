@@ -10,6 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -24,8 +26,13 @@ class DetailViewModel @Inject constructor(
 
     private val selectedId = savedStateHandle.get<Int?>("id")
 
-    private val _state = MutableStateFlow<DetailState>(DetailState.Loading)
-    val state = _state
+    private val _state = MutableStateFlow<DetailState>(DetailState())
+    val state = combine(
+        _state,
+        moviesRepository.getLikedMoviesFlow()
+    ) { state, likedList ->
+        state.copy(likedMovies = likedList)
+    }
         .onStart { fetchMovieDetails() }
         .stateIn(
             scope = viewModelScope,
@@ -34,9 +41,9 @@ class DetailViewModel @Inject constructor(
         )
 
     fun onAction(action: DetailsAction) {
-        when (action) {
-            DetailsAction.OnFavouritesClick -> TODO()
+        when(action){
             DetailsAction.OnErrorRetryClick -> fetchMovieDetails()
+            DetailsAction.OnMovieLikeClick -> onMovieLiked()
         }
     }
 
@@ -44,13 +51,21 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when (val details = moviesRepository.getMovieDetails(checkNotNull(selectedId))) {
                 is Result.Error -> {
-                    _state.update { DetailState.Error }
+                    _state.update { it.copy(isError = true) }
                 }
 
                 is Result.Success -> {
-                    _state.update { DetailState.Success(movie = details.data.toUi()) }
+                    _state.getAndUpdate { state -> state.copy(movie = details.data.toUi()) }
                 }
             }
+        }
+    }
+
+    private fun onMovieLiked() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val movieId = checkNotNull(state.value.movie?.id)
+            val isLiked = checkNotNull(movieId in state.value.likedMovies)
+            moviesRepository.setMovieLiked(movieId, isLiked.not())
         }
     }
 }
