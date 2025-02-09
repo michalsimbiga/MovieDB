@@ -3,6 +3,7 @@ package com.msimbiga.moviesdb.presentation.nowplaying.components
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,9 +30,12 @@ fun MovieTile(
     movie: MovieItem = Movie.mock.toUi(),
     onClick: () -> Unit = {}
 ) {
-    Column(modifier = Modifier.border(1.dp, Color.Blue)) {
+    Column(
+        modifier = Modifier
+            .border(1.dp, Color.Blue)
+            .clickable { onClick() }
+    ) {
         // Image
-
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
@@ -42,8 +46,7 @@ fun MovieTile(
             onError = { Log.d("VUKO", "On error $it") },
         )
 
-        // Name
-
+        // Name + rating
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,7 +71,5 @@ fun MovieTile(
                 maxLines = 1
             )
         }
-
-        // Rating
     }
 }
