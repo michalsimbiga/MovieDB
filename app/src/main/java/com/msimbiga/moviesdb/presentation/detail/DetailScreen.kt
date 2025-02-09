@@ -38,7 +38,6 @@ import com.msimbiga.moviesdb.presentation.components.DefaultErrorView
 import com.msimbiga.moviesdb.presentation.components.DefaultLoadingView
 import com.msimbiga.moviesdb.presentation.components.LikeButton
 import com.msimbiga.moviesdb.presentation.components.TopAppBar
-import com.msimbiga.moviesdb.presentation.models.MovieDetailsItem
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -122,10 +121,14 @@ fun DetailScreenContent(
                     }
 
                     item {
-                        InfoChipsSection(
+                        Row(
                             modifier = Modifier.fillMaxWidth(),
-                            model = state.movie
-                        )
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            InfoChip(state.movie.releaseDate)
+                            InfoChip("${state.movie.releaseDate} min")
+                        }
+
                     }
 
                     item { Text(state.movie.overview) }
@@ -137,23 +140,6 @@ fun DetailScreenContent(
                         )
                     }
                 }
-        }
-    }
-}
-
-@Composable
-private fun InfoChipsSection(
-    modifier: Modifier,
-    model: MovieDetailsItem
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        InfoChip(model.releaseDate)
-        InfoChip("${model.runtime} min")
-        if (model.adult) {
-            InfoChip("Adult")
         }
     }
 }
@@ -192,5 +178,4 @@ private fun OverallRating(modifier: Modifier, voteAverage: Double) {
             fontSize = 24.sp
         )
     }
-
 }
