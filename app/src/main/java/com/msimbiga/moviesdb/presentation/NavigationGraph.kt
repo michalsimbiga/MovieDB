@@ -27,6 +27,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.msimbiga.moviesdb.presentation.detail.DetailScreenDestination
 import com.msimbiga.moviesdb.presentation.detail.DetailScreenRoot
+import com.msimbiga.moviesdb.presentation.favourites.FavouritesDestination
+import com.msimbiga.moviesdb.presentation.favourites.FavouritesScreenRoot
 import com.msimbiga.moviesdb.presentation.nowplaying.NowPlayingDestination
 import com.msimbiga.moviesdb.presentation.nowplaying.NowPlayingScreenRoot
 import com.msimbiga.moviesdb.presentation.search.SearchScreenDestination
@@ -58,9 +60,9 @@ sealed class BottomScreen<T>(
     )
 
     @Serializable
-    data object Favourites : BottomScreen<NowPlayingDestination>(
+    data object Favourites : BottomScreen<FavouritesDestination>(
         "Favourites",
-        NowPlayingDestination,
+        FavouritesDestination,
         selectedIcon = Icons.Default.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder
     )
@@ -146,6 +148,17 @@ fun NavigationGraph() {
                 SearchScreenRoot(
                     onNavigateToDetails = { id ->
                         navController.navigate(DetailScreenDestination(id))
+                    }
+                )
+            }
+
+            composable<FavouritesDestination> {
+                FavouritesScreenRoot(
+                    onNavigateToDetails = { id ->
+                        navController.navigate(DetailScreenDestination(id))
+                    },
+                    onNavigateBackClicked = {
+                        navController.popBackStack()
                     }
                 )
             }
