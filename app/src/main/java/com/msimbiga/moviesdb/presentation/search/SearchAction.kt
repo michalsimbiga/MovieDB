@@ -4,4 +4,5 @@ sealed interface SearchAction {
     data class SearchTermUpdated(val searchTerm: String) : SearchAction
     data class OnMovieClicked(val id: Int) : SearchAction
     data class OnMovieLikedClicked(val id: Int) : SearchAction
+    data object OnLoadNextPage : SearchAction
 }

@@ -18,7 +18,6 @@ class MoviesNetworkDataSource @Inject constructor(
 ) {
 
     suspend fun getNowPlaying(page: Int): Result<NowPlayingPageDTO, DataError.Network> {
-        Log.d("Temporial", "Fetch now playing $page")
         val response = safeCall<NowPlayingPageDTO> {
             httpClient.get("https://api.themoviedb.org/3/movie/now_playing") {
                 url {
@@ -28,8 +27,7 @@ class MoviesNetworkDataSource @Inject constructor(
             }
         }
 
-        Log.d("VUKO", "Movies are $response")
-
+        Log.d("VUKO", "Now playing response $response")
         return response
     }
 
@@ -40,8 +38,7 @@ class MoviesNetworkDataSource @Inject constructor(
             }
         }
 
-        Log.d("VUKO", "Movie details are $response")
-
+        Log.d("VUKO", "Movie details response $response")
         return response
     }
 
@@ -60,8 +57,7 @@ class MoviesNetworkDataSource @Inject constructor(
             }
         }
 
-        Log.d("VUKO", "Movie suggestions are $response")
-
+        Log.d("VUKO", "Movie suggestions response $response")
         return response
     }
 }

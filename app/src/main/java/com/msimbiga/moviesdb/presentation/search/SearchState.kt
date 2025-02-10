@@ -8,5 +8,7 @@ data class SearchState(
     val isLoading: Boolean = false,
     val suggestions: List<MovieItem> = emptyList(),
     val searchTerm: String = "",
-    val likedMovies: List<Int> = emptyList()
+    val likedMovies: List<Int> = emptyList(),
+    val page: Int = 0,
+    val hasMore: Boolean = false
 )

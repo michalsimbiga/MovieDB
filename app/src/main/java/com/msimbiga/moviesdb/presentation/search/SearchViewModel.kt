@@ -29,9 +29,7 @@ class SearchViewModel @Inject constructor(
     private val _event = Channel<SearchEvent>()
     val event = _event.receiveAsFlow()
 
-    private val _state = MutableStateFlow<SearchState>(
-        SearchState(isLoading = true)
-    )
+    private val _state = MutableStateFlow<SearchState>(SearchState(isLoading = false))
     val state = _state
         .onStart {
             observeTextChanges()
@@ -56,6 +54,10 @@ class SearchViewModel @Inject constructor(
             is SearchAction.OnMovieLikedClicked -> {
                 setMovieLiked(action.id)
             }
+
+            SearchAction.OnLoadNextPage -> {
+                getSearchPage(_state.value.page)
+            }
         }
     }
 
@@ -68,22 +70,34 @@ class SearchViewModel @Inject constructor(
                 .collect { searchTerm ->
                     if (searchTerm.isEmpty()) return@collect
                     _state.update { it.copy(isLoading = true) }
+                    getSearchPage(null)
+                }
+        }
+    }
 
-                    when (val results = moviesRepository.fetchSearchPage(searchTerm, null)) {
-                        is Result.Error -> {
-                            _state.update { it.copy(isLoading = false) }
-                        }
+    private fun getSearchPage(page: Int? = null) {
+        viewModelScope.launch(Dispatchers.IO) {
 
-                        is Result.Success -> {
-                            _state.update {
-                                it.copy(
-                                    suggestions = results.data.results.map(Movie::toUi),
-                                    isLoading = false
-                                )
-                            }
-                        }
+            when (val results =
+                moviesRepository.getSearchPage(_state.value.searchTerm, page ?: FIRST_PAGE_NR)) {
+                is Result.Error -> {
+                    _state.update { it.copy(isLoading = false, page = FIRST_PAGE_NR) }
+                }
+
+                is Result.Success -> {
+                    _state.update {
+                        it.copy(
+                            suggestions = it.suggestions
+                                .plus(results.data.results.map(Movie::toUi))
+                                .toSet()
+                                .toList(),
+                            isLoading = false,
+                            hasMore = results.data.page < results.data.totalPages,
+                            page = results.data.page.inc()
+                        )
                     }
                 }
+            }
         }
     }
 
@@ -100,5 +114,9 @@ class SearchViewModel @Inject constructor(
             val isMovieLiked = id in _state.value.likedMovies
             moviesRepository.setMovieLiked(id, isMovieLiked.not())
         }
+    }
+
+    companion object {
+        private const val FIRST_PAGE_NR = 1
     }
 }
