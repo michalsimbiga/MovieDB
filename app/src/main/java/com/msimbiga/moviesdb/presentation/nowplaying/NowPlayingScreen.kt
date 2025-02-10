@@ -1,14 +1,20 @@
 package com.msimbiga.moviesdb.presentation.nowplaying
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -76,11 +82,30 @@ fun NowPlayingScreenContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = paddingValues
                 ) {
-                    items(state.movies, key = { movie -> movie.id }) { movie ->
+                    items(
+                        state.movies,
+                        key = { movie -> movie.id.toString() }
+                    ) { movie ->
                         MovieTile(
                             movie = movie,
                             onClick = { onAction(NowPlayingAction.OnMovieSelected(movie.id)) }
                         )
+                    }
+
+                    if (state.hasMore) {
+                        item {
+                            LaunchedEffect(state.page) {
+                                onAction(NowPlayingAction.OnGetNextPage)
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(1f),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
                     }
                 }
             }

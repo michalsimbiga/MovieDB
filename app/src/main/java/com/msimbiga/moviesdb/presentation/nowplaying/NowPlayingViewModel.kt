@@ -42,16 +42,15 @@ class NowPlayingViewModel @Inject constructor(
             }
 
             NowPlayingAction.OnErrorRetryClicked -> fetchNowPlayingMovies()
+            NowPlayingAction.OnGetNextPage -> fetchNowPlayingMovies(_state.value.page)
         }
     }
 
     private fun fetchNowPlayingMovies(page: Int? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val movies = moviesRepository.fetchNowPlayingPage(page)) {
+            when (val movies = moviesRepository.getNowPlayingPage(page ?: FIST_PAGE_NR)) {
                 is Result.Error -> {
-                    _state.update {
-                        it.copy(isError = true, isLoading = false)
-                    }
+                    _state.update { it.copy(isError = true, isLoading = false) }
                 }
 
                 is Result.Success -> {
@@ -59,11 +58,20 @@ class NowPlayingViewModel @Inject constructor(
                         it.copy(
                             isLoading = false,
                             isError = false,
-                            movies = movies.data.results.map(Movie::toUi)
+                            movies = it.movies
+                                .plus(movies.data.results.map(Movie::toUi))
+                                .toSet()
+                                .toList(),
+                            hasMore = movies.data.page < movies.data.totalPages,
+                            page = movies.data.page.inc()
                         )
                     }
                 }
             }
         }
+    }
+
+    companion object {
+        private const val FIST_PAGE_NR = 1
     }
 }

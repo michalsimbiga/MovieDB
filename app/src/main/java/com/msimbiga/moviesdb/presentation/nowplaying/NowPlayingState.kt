@@ -7,6 +7,8 @@ import com.msimbiga.moviesdb.presentation.models.MovieItem
 data class NowPlayingState(
     val isLoading: Boolean = false,
     val isError: Boolean = false,
-    val movies: List<MovieItem> = emptyList()
+    val movies: List<MovieItem> = emptyList(),
+    val page: Int = 0,
+    val hasMore: Boolean = false
 )
 

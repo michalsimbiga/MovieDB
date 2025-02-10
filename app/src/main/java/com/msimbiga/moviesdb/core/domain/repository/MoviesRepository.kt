@@ -8,8 +8,8 @@ import com.msimbiga.moviesdb.core.domain.models.SearchPage
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
-    suspend fun fetchNowPlayingPage(page: Int?): Result<NowPlayingPage, Error>
-    suspend fun fetchSearchPage(searchTerm: String, page: Int?): Result<SearchPage, Error>
+    suspend fun getNowPlayingPage(page: Int): Result<NowPlayingPage, Error>
+    suspend fun getSearchPage(searchTerm: String, page: Int): Result<SearchPage, Error>
     suspend fun getMovieDetails(id: Int): Result<MovieDetails, Error>
 
     suspend fun setMovieLiked(id: Int, isLiked: Boolean): Result<Any, Error>

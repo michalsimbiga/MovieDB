@@ -21,17 +21,17 @@ class MoviesRepositoryImpl @Inject constructor(
     private val moviesLocalDataSource: MoviesLocalDataSource
 ) : MoviesRepository {
 
-    override suspend fun fetchNowPlayingPage(page: Int?): Result<NowPlayingPage, Error> =
+    override suspend fun getNowPlayingPage(page: Int): Result<NowPlayingPage, Error> =
         moviesNetworkDataSource
-            .getNowPlaying()
+            .getNowPlaying(page)
             .map(NowPlayingPageDTO::toDomain)
 
-    override suspend fun fetchSearchPage(
+    override suspend fun getSearchPage(
         searchTerm: String,
-        page: Int?
+        page: Int
     ): Result<SearchPage, Error> =
         moviesNetworkDataSource
-            .getSearchSuggestions(searchTerm)
+            .getSearchSuggestions(searchTerm, page)
             .map(SearchPageDTO::toDomain)
 
     override suspend fun getMovieDetails(id: Int): Result<MovieDetails, Error> =
