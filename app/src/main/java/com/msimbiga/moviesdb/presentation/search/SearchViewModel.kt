@@ -69,7 +69,7 @@ class SearchViewModel @Inject constructor(
                 .debounce(1000L)
                 .collect { searchTerm ->
                     if (searchTerm.isEmpty()) return@collect
-                    _state.update { it.copy(isLoading = true) }
+                    _state.update { it.copy(isLoading = true, suggestions = emptyList()) }
                     getSearchPage(null)
                 }
         }
