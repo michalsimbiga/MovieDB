@@ -1,13 +1,18 @@
 package com.msimbiga.moviesdb.core.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.msimbiga.moviesdb.core.data.datasource.MoviesLocalDataSource
 import com.msimbiga.moviesdb.core.data.datasource.MoviesNetworkDataSource
 import com.msimbiga.moviesdb.core.data.models.MovieDetailsDTO
 import com.msimbiga.moviesdb.core.data.models.NowPlayingPageDTO
 import com.msimbiga.moviesdb.core.data.models.SearchPageDTO
+import com.msimbiga.moviesdb.core.data.paging.NowPlayingMoviesPagingDataSource
 import com.msimbiga.moviesdb.core.domain.Error
 import com.msimbiga.moviesdb.core.domain.Result
 import com.msimbiga.moviesdb.core.domain.map
+import com.msimbiga.moviesdb.core.domain.models.Movie
 import com.msimbiga.moviesdb.core.domain.models.MovieDetails
 import com.msimbiga.moviesdb.core.domain.models.NowPlayingPage
 import com.msimbiga.moviesdb.core.domain.models.SearchPage
@@ -51,4 +56,12 @@ class MoviesRepositoryImpl @Inject constructor(
     override fun getLikedMoviesFlow(): Flow<List<Int>> =
         moviesLocalDataSource.getLikedMoviesFlow()
 
+    override suspend fun getNowPlayingPagingData(): Flow<PagingData<Movie>> =
+        Pager(
+            config = PagingConfig(pageSize = 20, prefetchDistance = 1),
+            initialKey = 1,
+            pagingSourceFactory = {
+                NowPlayingMoviesPagingDataSource(moviesNetworkDataSource)
+            }
+        ).flow
 }

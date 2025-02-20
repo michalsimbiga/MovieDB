@@ -1,7 +1,9 @@
 package com.msimbiga.moviesdb.core.domain.repository
 
+import androidx.paging.PagingData
 import com.msimbiga.moviesdb.core.domain.Error
 import com.msimbiga.moviesdb.core.domain.Result
+import com.msimbiga.moviesdb.core.domain.models.Movie
 import com.msimbiga.moviesdb.core.domain.models.MovieDetails
 import com.msimbiga.moviesdb.core.domain.models.NowPlayingPage
 import com.msimbiga.moviesdb.core.domain.models.SearchPage
@@ -14,4 +16,6 @@ interface MoviesRepository {
 
     suspend fun setMovieLiked(id: Int, isLiked: Boolean): Result<Any, Error>
     fun getLikedMoviesFlow(): Flow<List<Int>>
+
+    suspend fun getNowPlayingPagingData(): Flow<PagingData<Movie>>
 }
