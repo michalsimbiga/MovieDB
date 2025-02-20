@@ -93,7 +93,7 @@ fun NowPlayingScreenContent(
                         count = pagingItems.itemCount,
                         key = { item -> item.toString() }
                     ) { index ->
-                        val movie = checkNotNull(pagingItems.get(index))
+                        val movie = checkNotNull(pagingItems[index])
                         MovieTile(
                             movie = movie,
                             onClick = { onAction(NowPlayingAction.OnMovieSelected(movie.id)) }
@@ -104,7 +104,7 @@ fun NowPlayingScreenContent(
                         // TODO : Visible loading state on scroll down
                         Log.d("VUKO", "is loading")
                         item(
-//                            span = { GridItemSpan(maxLineSpan) }
+                            span = { GridItemSpan(maxLineSpan) }
                         ) {
                             Box(
                                 modifier = Modifier
