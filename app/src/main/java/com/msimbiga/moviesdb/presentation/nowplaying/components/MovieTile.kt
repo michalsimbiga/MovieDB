@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,7 +58,7 @@ fun MovieTile(
             contentScale = ContentScale.Crop,
             placeholder = painterResource(R.drawable.ic_launcher_foreground),
             contentDescription = "${movie.title} image",
-            onError = { Log.d("VUKO", "On error $it") },
+            onError = { Log.d("Image Error", "Failed to load ${movie.title} image $it") },
             error = painterResource(R.drawable.ic_launcher_foreground),
         )
 
@@ -70,7 +71,9 @@ fun MovieTile(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp),
                 text = movie.title,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -79,14 +82,15 @@ fun MovieTile(
             Text(
                 modifier = Modifier
                     .background(
-                        color = Color.Gray.copy(0.3f),
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(percent = 50)
                     )
                     .padding(horizontal = 4.dp),
                 text = movie.voteAverage.toString(),
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
-                maxLines = 1
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
