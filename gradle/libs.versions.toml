@@ -18,6 +18,7 @@ ktorBom = "3.0.3"
 coil = "3.1.0"
 secretsGradle = "2.0.1"
 dataStore = "1.1.2"
+paging3 = "3.3.6"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -53,6 +54,10 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 coil-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+
+#Paging
+paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging3" }
+paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

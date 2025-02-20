@@ -73,6 +73,9 @@ dependencies {
 
     implementation(libs.datastore.preferences)
 
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
