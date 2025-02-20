@@ -27,7 +27,19 @@ class MoviesNetworkDataSource @Inject constructor(
             }
         }
 
-        Log.d("VUKO", "Now playing response $response")
+        when (response) {
+            is Result.Error -> {
+                Log.d("VUKO", "Now playing response failure ${response}")
+            }
+            is Result.Success -> {
+                Log.d(
+                    "VUKO", "Now playing response success" +
+                            " page:${response.data.page}" +
+                            " totalPages:${response.data.totalPages}" +
+                            " totalResults:${response.data.totalResults}"
+                )
+            }
+        }
         return response
     }
 
