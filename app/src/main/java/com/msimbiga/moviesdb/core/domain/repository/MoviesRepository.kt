@@ -18,4 +18,5 @@ interface MoviesRepository {
     fun getLikedMoviesFlow(): Flow<List<Int>>
 
     suspend fun getNowPlayingPagingData(): Flow<PagingData<Movie>>
+    suspend fun getSearchPagingData(searchTerm: String): Flow<PagingData<Movie>>
 }

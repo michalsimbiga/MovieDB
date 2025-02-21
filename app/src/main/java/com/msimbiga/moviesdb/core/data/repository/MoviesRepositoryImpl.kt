@@ -9,6 +9,7 @@ import com.msimbiga.moviesdb.core.data.models.MovieDetailsDTO
 import com.msimbiga.moviesdb.core.data.models.NowPlayingPageDTO
 import com.msimbiga.moviesdb.core.data.models.SearchPageDTO
 import com.msimbiga.moviesdb.core.data.paging.NowPlayingMoviesPagingDataSource
+import com.msimbiga.moviesdb.core.data.paging.SearchMoviesPagingDataSource
 import com.msimbiga.moviesdb.core.domain.Error
 import com.msimbiga.moviesdb.core.domain.Result
 import com.msimbiga.moviesdb.core.domain.map
@@ -62,6 +63,18 @@ class MoviesRepositoryImpl @Inject constructor(
             initialKey = 1,
             pagingSourceFactory = {
                 NowPlayingMoviesPagingDataSource(moviesNetworkDataSource)
+            }
+        ).flow
+
+    override suspend fun getSearchPagingData(searchTerm: String): Flow<PagingData<Movie>> =
+        Pager(
+            config = PagingConfig(pageSize = 20, prefetchDistance = 1),
+            initialKey = 1,
+            pagingSourceFactory = {
+                SearchMoviesPagingDataSource(
+                    moviesNetworkDataSource = moviesNetworkDataSource,
+                    searchTerm = searchTerm
+                )
             }
         ).flow
 }
