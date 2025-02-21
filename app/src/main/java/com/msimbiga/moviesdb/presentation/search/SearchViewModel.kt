@@ -1,8 +1,10 @@
 package com.msimbiga.moviesdb.presentation.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.msimbiga.moviesdb.core.domain.Result
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.msimbiga.moviesdb.core.domain.models.Movie
 import com.msimbiga.moviesdb.core.domain.repository.MoviesRepository
 import com.msimbiga.moviesdb.presentation.models.toUi
@@ -11,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -54,10 +57,6 @@ class SearchViewModel @Inject constructor(
             is SearchAction.OnMovieLikedClicked -> {
                 setMovieLiked(action.id)
             }
-
-            SearchAction.OnLoadNextPage -> {
-                getSearchPage(_state.value.page)
-            }
         }
     }
 
@@ -69,35 +68,21 @@ class SearchViewModel @Inject constructor(
                 .debounce(1000L)
                 .collect { searchTerm ->
                     if (searchTerm.isEmpty()) return@collect
-                    _state.update { it.copy(isLoading = true, suggestions = emptyList()) }
-                    getSearchPage(null)
+                    _state.update { it.copy(isLoading = true) }
+                    getSearchPagingData(searchTerm)
                 }
         }
     }
 
-    private fun getSearchPage(page: Int? = null) {
+
+    private fun getSearchPagingData(searchTerm: String) {
         viewModelScope.launch(Dispatchers.IO) {
-
-            when (val results =
-                moviesRepository.getSearchPage(_state.value.searchTerm, page ?: FIRST_PAGE_NR)) {
-                is Result.Error -> {
-                    _state.update { it.copy(isLoading = false, page = FIRST_PAGE_NR) }
+            moviesRepository.getSearchPagingData(searchTerm)
+                .cachedIn(viewModelScope)
+                .collectLatest { pagingData ->
+                    Log.d("VUKO", "Loggin search collect $searchTerm ${pagingData}")
+                    _state.update { it.copy(searchPagingData = pagingData.map(Movie::toUi), isLoading = false) }
                 }
-
-                is Result.Success -> {
-                    _state.update {
-                        it.copy(
-                            suggestions = it.suggestions
-                                .plus(results.data.results.map(Movie::toUi))
-                                .toSet()
-                                .toList(),
-                            isLoading = false,
-                            hasMore = results.data.page < results.data.totalPages,
-                            page = results.data.page.inc()
-                        )
-                    }
-                }
-            }
         }
     }
 
@@ -114,9 +99,5 @@ class SearchViewModel @Inject constructor(
             val isMovieLiked = id in _state.value.likedMovies
             moviesRepository.setMovieLiked(id, isMovieLiked.not())
         }
-    }
-
-    companion object {
-        private const val FIRST_PAGE_NR = 1
     }
 }
