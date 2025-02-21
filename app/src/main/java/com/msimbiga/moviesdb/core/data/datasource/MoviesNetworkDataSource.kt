@@ -17,9 +17,11 @@ class MoviesNetworkDataSource @Inject constructor(
     private val apiKey: String,
 ) {
 
+    private val BASE_URL = "https://api.themoviedb.org/3/"
+
     suspend fun getNowPlaying(page: Int): Result<NowPlayingPageDTO, DataError.Network> {
         val response = safeCall<NowPlayingPageDTO> {
-            httpClient.get("https://api.themoviedb.org/3/movie/now_playing") {
+            httpClient.get("$BASE_URL/movie/now_playing") {
                 url {
                     headers.append("Authorization", "Bearer $apiKey")
                     parameters.append("page", page.toString())
@@ -29,11 +31,11 @@ class MoviesNetworkDataSource @Inject constructor(
 
         when (response) {
             is Result.Error -> {
-                Log.d("VUKO", "Now playing response failure ${response}")
+                Log.d("MoviesNetworkDataSource", "Now playing response failure ${response}")
             }
             is Result.Success -> {
                 Log.d(
-                    "VUKO", "Now playing response success" +
+                    "MoviesNetworkDataSource", "Now playing response success" +
                             " page:${response.data.page}" +
                             " totalPages:${response.data.totalPages}" +
                             " totalResults:${response.data.totalResults}"
@@ -45,12 +47,12 @@ class MoviesNetworkDataSource @Inject constructor(
 
     suspend fun getMovieDetails(id: Int): Result<MovieDetailsDTO, DataError.Network> {
         val response = safeCall<MovieDetailsDTO> {
-            httpClient.get("https://api.themoviedb.org/3/movie/$id") {
+            httpClient.get("$BASE_URL/movie/$id") {
                 url { headers.append("Authorization", "Bearer $apiKey") }
             }
         }
 
-        Log.d("VUKO", "Movie details response $response")
+        Log.d("MoviesNetworkDataSource", "Movie details response $response")
         return response
     }
 
@@ -59,7 +61,7 @@ class MoviesNetworkDataSource @Inject constructor(
         page: Int
     ): Result<SearchPageDTO, DataError.Network> {
         val response = safeCall<SearchPageDTO> {
-            httpClient.get("https://api.themoviedb.org/3/search/movie") {
+            httpClient.get("$BASE_URL/search/movie") {
                 url {
                     headers.append("Authorization", "Bearer $apiKey")
                     parameters.append("query", searchTerm)
@@ -69,7 +71,19 @@ class MoviesNetworkDataSource @Inject constructor(
             }
         }
 
-        Log.d("VUKO", "Movie suggestions response $response")
+        when (response) {
+            is Result.Error -> {
+                Log.d("VUKO", "Search response failure ${response}")
+            }
+            is Result.Success -> {
+                Log.d(
+                    "MoviesNetworkDataSource", "Search response success" +
+                            " page:${response.data.page}" +
+                            " totalPages:${response.data.totalPages}" +
+                            " totalResults:${response.data.totalResults}"
+                )
+            }
+        }
         return response
     }
 }
