@@ -24,13 +24,11 @@ class NowPlayingMoviesPagingDataSource(
             val response = moviesNetworkDataSource.getNowPlaying(page = pageIndex)
 
             when (response) {
-                is Result.Error -> LoadResult.Error(response.error as Throwable)
+                is Result.Error -> LoadResult.Error(Exception(response.error.name))
                 is Result.Success -> {
-                    val nextKey = if (response.data.page == response.data.totalPages) {
-                        null
-                    } else {
-                        response.data.page.inc()
-                    }
+                    val nextKey =
+                        if (response.data.page == response.data.totalPages) null else response.data.page.inc()
+
                     LoadResult.Page(
                         data = response.data.results.map(MovieDTO::toDomain),
                         prevKey = if (pageIndex == 1) null else pageIndex,
