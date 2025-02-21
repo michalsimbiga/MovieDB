@@ -3,10 +3,8 @@ package com.msimbiga.moviesdb.presentation.nowplaying
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.msimbiga.moviesdb.core.domain.Result
 import com.msimbiga.moviesdb.core.domain.models.Movie
 import com.msimbiga.moviesdb.core.domain.repository.MoviesRepository
 import com.msimbiga.moviesdb.presentation.models.toUi
@@ -47,13 +45,11 @@ class NowPlayingViewModel @Inject constructor(
             }
 
             NowPlayingAction.OnErrorRetryClicked -> startPagingData()
-//            NowPlayingAction.OnGetNextPage -> fetchNowPlayingMovies(_state.value.page)
         }
     }
 
     private fun startPagingData() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("VUKO", "Start paging items")
             moviesRepository.getNowPlayingPagingData()
                 .cachedIn(viewModelScope)
                 .collectLatest { pagingData ->

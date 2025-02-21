@@ -10,8 +10,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -100,8 +102,20 @@ fun NowPlayingScreenContent(
                         )
                     }
 
-                    if (pagingItems.loadState.refresh is LoadState.Loading) {
-                        // TODO : Visible loading state on scroll down
+                    // Visible for initial load of the paginated data
+                    if (pagingItems.loadState.refresh == LoadState.Loading) {
+                        item(
+                            span = { GridItemSpan(maxLineSpan) }
+                        ) {
+                            Text(
+                                text = "Loading data",
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+
+                    // Visible loading for appending new data to existing list
+                    if (pagingItems.loadState.append == LoadState.Loading) {
                         Log.d("VUKO", "is loading")
                         item(
                             span = { GridItemSpan(maxLineSpan) }
@@ -113,6 +127,24 @@ fun NowPlayingScreenContent(
                                 contentAlignment = Alignment.Center
                             ) {
                                 CircularProgressIndicator()
+                            }
+                        }
+                    }
+
+                    // Visible when fetching initial/appending has failed
+                    if (pagingItems.loadState.hasError) {
+                        Log.d("VUKO", "is error")
+                        item(
+                            span = { GridItemSpan(maxLineSpan) }
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Button(onClick = { pagingItems.retry() }) {
+                                    Text("Retry loading data")
+                                }
                             }
                         }
                     }
